@@ -4,6 +4,7 @@ from PIL import ImageFilter
 import sys
 
 import numpy as np
+from scipy import signal
 
 def image_to_np_array(image_path):
     return np.asarray(Image.open(image_path))
@@ -85,13 +86,13 @@ def get_all_kernels():
 
     kernel_dict['e.jpg'] = get_sharpen_filter(0.9, identity_filter, approximated_gaussian)
 
-    gaussian_derivative = np.zeros((5,5))
-    gaussian_derivative[1:4, 1:4] = horizontal_derivative
-    gaussian_derivative = gaussian_derivative * approximated_gaussian
+    # gaussian_derivative = np.zeros((3,3))
+    # gaussian_derivative[1:4, 1:4] = horizontal_derivative
+    gaussian_derivative = signal.convolve2d(horizontal_derivative, approximated_gaussian)
+    gaussian_derivative = gaussian_derivative[1:6, 1:6]
     kernel_dict['f.jpg'] = gaussian_derivative
 
     return kernel_dict
-
 
 
 if __name__ == '__main__':
